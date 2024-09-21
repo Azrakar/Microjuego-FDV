@@ -38,6 +38,7 @@ public class Pause : MonoBehaviour
             escPushed = true;
             estado = Estados.Juego;
             pantallaPausa.SetActive(false);
+            Pooler.ClearPools();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         

@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Vector3 = UnityEngine.Vector3;
 
 public class Player : MonoBehaviour
 {
     public float thrustForce = 2000f;
-    public float rotationSpeed = 120f;
-    public GameObject gun, bulletPrefab;
+    public float rotationSpeed = 1200f;
+    public GameObject gun, bulletPrefab, bullet;
 
     private Rigidbody _rigid;
     private int hp = 3;
@@ -31,12 +33,10 @@ public class Player : MonoBehaviour
 
         _rigid.AddForce(thrustDirection * thrust * thrustForce);
         transform.Rotate(Vector3.forward, -rotation * rotationSpeed);
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // Use the Pooler to spawn bullets
-            GameObject bullet = Pooler.Spawn(bulletPrefab, gun.transform.position, Quaternion.identity);
-            
+            bullet = Pooler.Spawn(bulletPrefab, gun.transform.position, UnityEngine.Quaternion.identity);
             // Initialize the bullet's movement direction
             Bullet bulletScript = bullet.GetComponent<Bullet>();
             bulletScript.Initialize(transform.right);
@@ -67,6 +67,8 @@ public class Player : MonoBehaviour
                     GetComponent<Rigidbody>().velocity = Vector3.zero;
                     Destroy(collision.gameObject);
                     SCORE = 0;
+                    hp = 3;
+                    Pooler.ClearPools();
                     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                     break;
             }
