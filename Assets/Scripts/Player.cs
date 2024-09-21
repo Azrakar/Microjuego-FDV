@@ -16,17 +16,26 @@ public class Player : MonoBehaviour
     private int hp = 3;
     public static int SCORE = 0;
     private Vector3 originalPos;
-
+    public static float yBorderLimit, xBorderLimit;
     // Start is called before the first frame update
     void Start()
     {
         _rigid = GetComponent<Rigidbody>();
         originalPos = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z);
+        yBorderLimit = Camera.main.orthographicSize + 1;
+        xBorderLimit = (Camera.main.orthographicSize + 1) * Screen.width / Screen.height;
     }
 
     // Update is called once per frame
     void Update()
     {
+        var newPos = transform.position;
+        if(newPos.x > xBorderLimit) newPos.x = -xBorderLimit+1;
+        else if(newPos.x < -xBorderLimit) newPos.x = xBorderLimit-1;
+        if(newPos.y > yBorderLimit) newPos.y = -yBorderLimit+1;
+        else if(newPos.y < -yBorderLimit) newPos.y = yBorderLimit-1;
+        transform.position = newPos;
+
         float rotation = Input.GetAxis("Horizontal") * Time.deltaTime;
         float thrust = Input.GetAxis("Vertical") * Time.deltaTime;
         Vector3 thrustDirection = transform.right;
